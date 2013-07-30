@@ -1,0 +1,6 @@
+(define (range n)
+  (define (range-iter n acc)
+    (if (= n 0)
+	acc
+	(range-iter (- n 1) (cons (- n 1) acc))))
+  (range-iter n '()))

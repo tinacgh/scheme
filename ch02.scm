@@ -82,4 +82,50 @@
 (define (lambda-cdr z)
   (z (lambda (p q) q)))
 
-;;; 2.1.4
+;;; 2.18
+(define (my-reverse lst)
+  (define (my-rev-iter lst result)
+    (if (null? lst)
+	result
+	(my-rev-iter (cdr lst) (cons (car lst) result))))
+  (my-rev-iter lst '()))
+
+;;; 2.21
+(define (square-list items)
+  (map square items))
+
+(define (square-list-2 items)
+  (if (null? items)
+      '()
+      (cons (square (car items)) (square-list-2 (cdr items)))))
+
+;;; 2.2.2
+(define (scale-tree tree factor)
+  (cond ((null? tree) '())
+	((not (pair? tree)) (* tree factor))
+	(else (cons (scale-tree (car tree) factor)
+		    (scale-tree (cdr tree) factor)))))
+
+(define (scale-tree-map tree factor)
+  (map (lambda (sub-tree)
+	 (if (pair? sub-tree)
+	     (scale-tree-map sub-tree factor)
+	     (* sub-tree factor)))
+       tree))
+
+(define (my-filter predicate sequence)
+  (cond ((null? sequence) '())
+	((predicate (car sequence))
+	 (cons (car sequence)
+	       (filter predicate (cdr sequence))))
+	(else (filter predicate (cdr sequence)))))
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+	  (accumulate op initial (cdr sequence)))))
+
+;;; 2.33
+(define (my-length seq)
+  (accumulate (lambda (x y) (+ y 1)) 0 seq))
