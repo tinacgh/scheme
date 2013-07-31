@@ -260,4 +260,68 @@
 
 (define (apply-generic op arg) (arg op))
 
+;;; put and get stackoverflow #5499005
+(define global-array '())
+
+(define (make-entry k v) (list k v))
+(define (key entry) (car entry))
+(define (value entry) (cadr entry))
+
+(define (put op type item)
+  (define (put-helper k array)
+    (cond ((null? array) (list (make-entry k item)))
+	  ((equal? (key (car array)) k) array)
+	  (else (cons (car array) (put-helper k (cdr array))))))
+  (set! global-array (put-helper (list op type) global-array)))
+
+(define (get op type)
+  (define (get-helper k array)
+    (cond ((null? array) #f)
+	  ((equal? (key (car array)) k) (value (car array)))
+	  (else (get-helper k (cdr array)))))
+  (get-helper (list op type) global-array))
 ;;; 2.5
+(define (add x y) (apply-generic 'add x y))
+(define (sub x y) (apply-generic 'sub x y))
+(define (mul x y) (apply-generic 'mul x y))
+(define (div x y) (apply-generic 'div x y))
+
+(define (install-scheme-number-package)
+  (define (tag x)
+    (attach-tag 'scheme-number x))
+  (put 'add '(scheme-number scheme-number)
+       (lambda (x y) (tag (+ x y))))
+  (put 'sub '(scheme-number scheme-number)
+       (lambda (x y) (tag (- x y))))
+  (put 'mul '(scheme-number scheme-number)
+       (lambda (x y) (tag (* x y))))
+  (put 'div '(scheme-number scheme-number)
+       (lambda (x y) (tag (/ x y))))
+  (put 'make 'scheme-number (lambda (x) (tag x)))
+  'done)
+
+(define (make-scheme-number n)
+  ((get 'make 'scheme-number) n))
+
+(define (type-tag datum)
+  (if (pair? datum)
+      (car datum)
+      (error "Bad tagged datum - Type-tag")))
+(define (contents datum)
+  (if (pair? datum)
+      (cdr datum)
+      (error "Bad tagged datum - Contents")))
+
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+	  (apply proc (map contents args))
+	  (if (= (length args) 2)
+	      (let ((type1 (car type-tags))
+		    (type2 (cadr type-tags))
+		    (a1 (car args))
+		    (a2 (cadr args)))
+		(apply-generic op a1 a2))
+	      (error "No method for these types"
+		     (list op type-tags)))))))
