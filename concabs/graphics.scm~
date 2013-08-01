@@ -1,0 +1,8 @@
+;;; if images are blank try this
+(define test-bb
+  (resize-image
+   (filled-triangle 0 1 0 -1 1 -1)
+   25))
+
+;;; to close images
+(close-image #@12)
