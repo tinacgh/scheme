@@ -1,4 +1,7 @@
-;;; if images are blank try this
+(load "fungraph")
+(load "concabs/fungraph")
+
+;;; if images are blank run mouse over the new window
 (define test-bb
   (resize-image
    (filled-triangle 0 1 0 -1 1 -1)
