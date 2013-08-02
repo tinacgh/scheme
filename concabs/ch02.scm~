@@ -1,0 +1,53 @@
+;;; ex 2.1
+
+(define power
+  (lambda (base exponent)
+    (if (= exponent 0)
+        1
+        (* base (power base (- exponent 1))))))
+
+(define some-sq
+  (lambda (n)
+    (if (= n 0)
+        0
+        (+ (some-sq (- n 1))
+           (- (+ n n) 1)))))
+
+(define inf-sq
+  (lambda (n)
+    (display n)
+    (newline)
+    (if (= n 0)
+        0
+        (- (inf-sq (+ n 1))
+           (+ (+ n n) 1)))))
+
+(define even-sq
+  (lambda (n)
+    (if (= n 0)
+        0
+        (if (even? n)
+            (* (even-sq (/ n 2))
+               4)
+            (+ (even-sq (- n 1))
+               (- (+ n n) 1))))))
+
+(define build-result
+  (lambda (base-num op n)
+    (if (= n 0)
+        base-num
+        (op n (build-result base-num op (- n 1)) ))))
+
+(define fact-from-build
+  (lambda (n)
+    (build-result 1 * n)))
+
+(define subtract-the-first
+  (lambda (n)
+    (build-result 0 - n)))
+
+(define get-exp-of-2
+  (lambda (n)
+    (if (odd? n)
+        0
+        (+ 1 (get-exp-of-2 (/ n 2))))))

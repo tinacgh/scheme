@@ -319,3 +319,5 @@
     (if (null? images)
         image
         (loop (stack2 image (car images)) (cdr images)))))
+
+(define (c img) (close-image img))

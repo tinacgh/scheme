@@ -10,3 +10,6 @@
 
 (define (range n)
   (reverse (rev-range n)))
+
+(define (last lst)
+  (car (reverse lst)))

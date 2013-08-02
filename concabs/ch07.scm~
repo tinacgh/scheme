@@ -1,0 +1,15 @@
+(define integers-from-to
+  (lambda (low high)
+    (if (> low high)
+        '()
+        (cons low (integers-from-to (+ 1 low) high)))))
+
+(define iter-ints-from-to
+  (lambda (low high)
+    (define iter
+      (lambda (high lst)
+        (if (< high low)
+            lst
+            (iter (- high 1)
+                  (cons high lst)))))
+    (iter high '())))
