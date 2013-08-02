@@ -11,3 +11,6 @@
 (define (pinwheel img)
   (stack (side-by-side (turn-right img) (half-turn img))
 	 (side-by-side img (turn-left img))))
+
+(define (draw-segment x1 y1 . pts)
+  (line x1 y1 (car pts) (cadr pts)))
